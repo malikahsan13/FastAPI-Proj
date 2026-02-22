@@ -28,6 +28,13 @@ def create_Todo(todo: Todo):
 def update_Todo(todo_id: int, updated_todo: Todo):
     for i, todo in enumerate(todos):
         if todo.id == todo_id:
-            todo[i] = updated_todo
+            todos[i] = updated_todo
             return {"msg": "Todo updated successfully"}
     return {"msg": "Failed to update Todo"}
+
+
+@app.delete("/{todo_id}")
+def delete_Todo(todo_id: int):
+    global todos
+    todos = [todo for todo in todoes if todo.id != todo_id]
+    return {"msg": "Todo Deleted successfully"}
