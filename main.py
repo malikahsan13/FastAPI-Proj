@@ -24,6 +24,10 @@ def create_Todo(todo: Todo):
     return {"msg": "Todo created successfully"}
 
 
-@app.put('/')
-def home():
-    return {"msg": "hi world"}
+@app.put('/{todo_id}')
+def update_Todo(todo_id: int, updated_todo: Todo):
+    for i, todo in enumerate(todos):
+        if todo.id == todo_id:
+            todo[i] = updated_todo
+            return {"msg": "Todo updated successfully"}
+    return {"msg": "Failed to update Todo"}
