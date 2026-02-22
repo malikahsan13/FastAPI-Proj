@@ -1,16 +1,27 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
 
 app = FastAPI()
 
 
+class Todo(BaseModel):
+    id: int
+    name: str
+    description: str
+
+
+todos = []
+
+
 @app.get('/')
-def home():
-    return {"msg": "hello world"}
+def show_Todos():
+    return todos
 
 
 @app.post('/')
-def home():
-    return {"msg": "hi world"}
+def create_Todo(todo: Todo):
+    todos.append(todo)
+    return {"msg": "Todo created successfully"}
 
 
 @app.put('/')
