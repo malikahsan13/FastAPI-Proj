@@ -9,5 +9,10 @@ def home():
 
 
 @app.post('/')
-def hello():
+def home():
+    return {"msg": "hi world"}
+
+
+@app.put('/')
+def home():
     return {"msg": "hi world"}
