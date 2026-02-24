@@ -1,7 +1,7 @@
-from fastapi import FastAPI
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
-app = FastAPI()
+router = APIRouter()
 
 
 class Todo(BaseModel):
@@ -13,18 +13,18 @@ class Todo(BaseModel):
 todos = []
 
 
-@app.get('/')
+@router.get('/')
 def show_Todos():
     return todos
 
 
-@app.post('/')
+@router.post('/')
 def create_Todo(todo: Todo):
     todos.append(todo)
     return {"msg": "Todo created successfully"}
 
 
-@app.put('/{todo_id}')
+@router.put('/{todo_id}')
 def update_Todo(todo_id: int, updated_todo: Todo):
     for i, todo in enumerate(todos):
         if todo.id == todo_id:
@@ -33,7 +33,7 @@ def update_Todo(todo_id: int, updated_todo: Todo):
     return {"msg": "Failed to update Todo"}
 
 
-@app.delete("/{todo_id}")
+@router.delete("/{todo_id}")
 def delete_Todo(todo_id: int):
     global todos
     todos = [todo for todo in todos if todo.id != todo_id]
