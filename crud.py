@@ -9,7 +9,7 @@ router = APIRouter()
 
 class TodoCreate(BaseModel):
     id: int
-    name: str
+    title: str
     description: str
     done: bool
 
@@ -26,7 +26,7 @@ def show_Todos():
 
 @router.post('/', response_model=ToDoResponse)
 def create_Todo(todo: TodoCreate, db: Session = Depends(get_db)):
-    new_todo = ToDO(title=todo.name, description=todo.description, done=todo.done)
+    new_todo = ToDO(title=todo.title, description=todo.description, done=todo.done)
     db.add(new_todo)
     db.commit()
     return new_todo
