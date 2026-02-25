@@ -7,26 +7,30 @@ from typing import List
 
 router = APIRouter()
 
+
 class TodoCreate(BaseModel):
     id: int
     title: str
     description: str
     done: bool
 
+
 class ToDoResponse(TodoCreate):
     id: int
+
 
 todos = []
 
 
-@router.get('/', response_model=ToDoResponse)
+@router.get('/', response_model=List[ToDoResponse])
 def show_Todos(db: Session = Depends(get_db)):
     return db.query(ToDO).all()
 
 
 @router.post('/', response_model=ToDoResponse)
 def create_Todo(todo: TodoCreate, db: Session = Depends(get_db)):
-    new_todo = ToDO(title=todo.title, description=todo.description, done=todo.done)
+    new_todo = ToDO(title=todo.title,
+                    description=todo.description, done=todo.done)
     db.add(new_todo)
     db.commit()
     return new_todo
