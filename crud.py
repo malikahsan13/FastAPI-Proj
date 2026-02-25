@@ -39,7 +39,7 @@ def create_Todo(todo: TodoCreate, db: Session = Depends(get_db)):
 
 @router.put('/{todo_id}', response_model=ToDoResponse)
 def update_Todo(todo_id: int, todo: TodoCreate, db: Session = Depends(get_db)):
-    db_todo = db.query(ToDo).filter(ToDo.id == todo_id).first()
+    db_todo = db.query(ToDO).filter(ToDO.id == todo_id).first()
     if not todo:
         return HTTPException(status_code=404, detail="Todo Not Found")
     db_todo.title = todo.title
@@ -48,8 +48,12 @@ def update_Todo(todo_id: int, todo: TodoCreate, db: Session = Depends(get_db)):
     db.commit()  # why session not added check
     return todo
 
-# @router.delete("/{todo_id}")
-# def delete_Todo(todo_id: int):
-#     global todos
-#     todos = [todo for todo in todos if todo.id != todo_id]
-#     return {"msg": "Todo Deleted successfully"}
+
+@router.delete("/{todo_id}")
+def delete_Todo(todo_id: int, db: Session = Depends(get_db)):
+    db_todo = db.query(ToDO).filter(ToDO.id == todo_id).first()
+    if not db_todo:
+        return HTTPException(status_code=404, detail="Todo Not Found")
+    db.delete(db_todo)
+    db.commit()
+    return {"message": "Todo Deleted Successfully"}
