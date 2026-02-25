@@ -33,6 +33,7 @@ def create_Todo(todo: TodoCreate, db: Session = Depends(get_db)):
                     description=todo.description, done=todo.done)
     db.add(new_todo)
     db.commit()
+    db.refresh(new_todo)  # it will fetch ids sometime it gives id empty
     return new_todo
 
 
