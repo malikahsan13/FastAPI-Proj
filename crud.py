@@ -3,7 +3,6 @@ from pydantic import BaseModel
 
 router = APIRouter()
 
-
 class Todo(BaseModel):
     id: int
     name: str
