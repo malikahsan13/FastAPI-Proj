@@ -4,9 +4,15 @@ from database import get_db
 from sqlalchemy.orm import Session
 from models import ToDO
 from typing import List
+#  if want to run for normal html css
+from fastapi import Request, Form
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import RedirectResponse
 
 router = APIRouter()
 
+#  if want to run for normal html css
+templates = Jinja2Templates(directory="templates")
 
 class TodoCreate(BaseModel):
     title: str
@@ -22,8 +28,13 @@ todos = []
 
 
 @router.get("/", response_model=List[ToDoResponse])
-def show_Todos(db:Session=Depends(get_db)):
-    return db.query(ToDO).all()
+def show_Todos(request: Request, db:Session=Depends(get_db)):
+    todos = db.query(ToDO).all()
+    return templates.TemplateResponse('todo_list.html', {"request":request, "todos": todos})
+
+# @router.get("/", response_model=List[ToDoResponse])
+# def show_Todos(db:Session=Depends(get_db)):
+#     return db.query(ToDO).all()
     
 @router.post("/",response_model=ToDoResponse)
 def create_Todo(todo: TodoCreate, db: Session = Depends(get_db)):

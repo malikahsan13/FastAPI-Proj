@@ -3,6 +3,8 @@ from database import engine
 from models import Base
 from crud import router as crud_router
 from fastapi.middleware.cors import CORSMiddleware
+# if want to run for normal html css
+import uvicorn
 
 app = FastAPI()
 
@@ -21,3 +23,7 @@ app.include_router(crud_router, prefix='/todo', tags=["Crud Router"])
 @app.get("/")
 def show_QParams(title: str):
     return {"Message": f"{title}"}
+
+#  if want to run for normal html css
+if __name__ == "__main__":
+    uvicorn.run(app, host = "127.0.0.1", port = 8000)
