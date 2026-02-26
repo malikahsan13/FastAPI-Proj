@@ -9,3 +9,7 @@ Base.metadata.create_all(bind=engine)
 
 
 app.include_router(crud_router, prefix='/todo', tags=["Crud Router"])
+
+@app.get("/")
+def show_QParams(title: str):
+    return {"Message": f"{title}"}
