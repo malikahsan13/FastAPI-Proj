@@ -9,7 +9,6 @@ router = APIRouter()
 
 
 class TodoCreate(BaseModel):
-    id: int
     title: str
     description: str
     done: bool
@@ -22,38 +21,35 @@ class ToDoResponse(TodoCreate):
 todos = []
 
 
-@router.get('/', response_model=List[ToDoResponse])
-def show_Todos(db: Session = Depends(get_db)):
+@router.get("/", response_model=List[ToDoResponse])
+def show_Todos(db:Session=Depends(get_db)):
     return db.query(ToDO).all()
-
-
-@router.post('/', response_model=ToDoResponse)
+    
+@router.post("/",response_model=ToDoResponse)
 def create_Todo(todo: TodoCreate, db: Session = Depends(get_db)):
-    new_todo = ToDO(title=todo.title,
-                    description=todo.description, done=todo.done)
+    new_todo = ToDO(title=todo.title, description=todo.description, done=todo.done)
     db.add(new_todo)
     db.commit()
-    db.refresh(new_todo)  # it will fetch ids sometime it gives id empty
+    db.refresh(new_todo)
     return new_todo
 
 
-@router.put('/{todo_id}', response_model=ToDoResponse)
-def update_Todo(todo_id: int, todo: TodoCreate, db: Session = Depends(get_db)):
+@router.put("/{todo_id}", response_model=ToDoResponse)
+def update_todo(todo_id: int, todo: TodoCreate, db : Session=Depends(get_db)):
     db_todo = db.query(ToDO).filter(ToDO.id == todo_id).first()
     if not db_todo:
-        return HTTPException(status_code=404, detail="Todo Not Found")
+        raise HTTPException(status_code=404, detail="Todo Not Found")
     db_todo.title = todo.title
     db_todo.description = todo.description
     db_todo.done = todo.done
-    db.commit()  # why session not added check
-    return todo
-
+    db.commit()
+    return db_todo
 
 @router.delete("/{todo_id}")
-def delete_Todo(todo_id: int, db: Session = Depends(get_db)):
+def delete_todo(todo_id:int, db: Session = Depends(get_db)):
     db_todo = db.query(ToDO).filter(ToDO.id == todo_id).first()
     if not db_todo:
-        return HTTPException(status_code=404, detail="Todo Not Found")
+        raise HTTPException(status_code=404, detail="Todo Not Found")
     db.delete(db_todo)
     db.commit()
-    return {"message": "Todo Deleted Successfully"}
+    return {"Todo Deleted Successfully"}
